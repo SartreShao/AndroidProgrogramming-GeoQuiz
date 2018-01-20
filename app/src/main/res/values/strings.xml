@@ -1,8 +1,19 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
-    <string name="question_text">Canberra is the capital of Australia</string>
+
+    <!--view's text-->
     <string name="true_button">TRUE</string>
     <string name="false_button">FALSE</string>
-    <string name="correct_toast">Correct!</string>
-    <string name="incorrect_toast">Incorrect!</string>
+    <string name="correct_toast">正确!</string>
+    <string name="incorrect_toast">错误!</string>
+    <string name="next_button">下一题</string>
+
+    <!--question text-->
+    <string name="question_0">大便很臭？</string>
+    <string name="question_1">邵励治很帅？</string>
+    <string name="question_2">邵励治不厉害？</string>
+    <string name="question_3">邵励治厉害？</string>
+    <string name="question_4">邵励治不帅？</string>
+    <string name="previous_button">上一题</string>
+
 </resources>
