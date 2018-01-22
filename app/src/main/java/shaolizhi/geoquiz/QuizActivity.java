@@ -1,7 +1,10 @@
 package shaolizhi.geoquiz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,9 +18,11 @@ public class QuizActivity extends AppCompatActivity {
     private Button nextButton;
     private Button previousButton;
     private TextView questionTextView;
+    private Button cheatButton;
 
     //常量
     private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEATER = 1;
 
     //数据库
     private Question[] questionBox = new Question[]{
@@ -29,6 +34,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int currentIndex = 0;
+    private boolean isCheater;
 
     //falseButton click event
     private void clickFalseButton() {
@@ -43,6 +49,7 @@ public class QuizActivity extends AppCompatActivity {
     //nextButton click event
     private void clickNextButton() {
         currentIndex = (currentIndex + 1) % questionBox.length;
+        isCheater = false;
         getCurrentQuestion();
     }
 
@@ -53,6 +60,13 @@ public class QuizActivity extends AppCompatActivity {
             currentIndex = currentIndex + questionBox.length;
         }
         getCurrentQuestion();
+    }
+
+    //cheatButton click event
+    private void clickCheatButton() {
+        boolean answerIsTrue = questionBox[currentIndex].isAnswerTrue();
+        Intent intent = CheatActivity.newIntent(this, answerIsTrue);
+        startActivityForResult(intent, REQUEST_CODE_CHEATER);
     }
 
     //---------------------------------------override method--------------------------------------//
@@ -78,6 +92,20 @@ public class QuizActivity extends AppCompatActivity {
         outState.putInt(KEY_INDEX, currentIndex);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEATER) {
+            if (data == null) {
+                return;
+            }
+            Log.e("Result", String.valueOf(isCheater));
+            isCheater = CheatActivity.wasAnswerShown(data);
+        }
+    }
+
     //----------------------------------------private method--------------------------------------//
     private void getCurrentQuestion() {
         int question = questionBox[currentIndex].getQuestionTextResId();
@@ -88,10 +116,14 @@ public class QuizActivity extends AppCompatActivity {
         boolean trueAnswer = questionBox[currentIndex].isAnswerTrue();
         int toastTextResId;
 
-        if (answer == trueAnswer) {
-            toastTextResId = R.string.correct_toast;
+        if (isCheater) {
+            toastTextResId = R.string.judgment_toast;
         } else {
-            toastTextResId = R.string.incorrect_toast;
+            if (answer == trueAnswer) {
+                toastTextResId = R.string.correct_toast;
+            } else {
+                toastTextResId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(this, toastTextResId, Toast.LENGTH_SHORT).show();
@@ -122,6 +154,12 @@ public class QuizActivity extends AppCompatActivity {
                 clickPreviousButton();
             }
         });
+        cheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickCheatButton();
+            }
+        });
     }
 
     private void initView() {
@@ -130,5 +168,6 @@ public class QuizActivity extends AppCompatActivity {
         questionTextView = findViewById(R.id.question_text_view);
         nextButton = findViewById(R.id.next_button);
         previousButton = findViewById(R.id.previous_button);
+        cheatButton = findViewById(R.id.cheat_button);
     }
 }

@@ -15,5 +15,9 @@
     <string name="question_3">邵励治厉害？</string>
     <string name="question_4">邵励治不帅？</string>
     <string name="previous_button">上一题</string>
+    <string name="warning_text">确定你要做弊吗？</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">作弊！</string>
+    <string name="judgment_toast">作弊是不对的！</string>
 
 </resources>
