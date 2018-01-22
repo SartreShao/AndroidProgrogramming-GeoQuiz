@@ -9,11 +9,15 @@ import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity {
 
+    //控件
     private Button trueButton;
     private Button falseButton;
     private Button nextButton;
     private Button previousButton;
     private TextView questionTextView;
+
+    //常量
+    private static final String KEY_INDEX = "index";
 
     //数据库
     private Question[] questionBox = new Question[]{
@@ -51,11 +55,16 @@ public class QuizActivity extends AppCompatActivity {
         getCurrentQuestion();
     }
 
+    //---------------------------------------override method--------------------------------------//
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
         setTitle(R.string.app_name);
+
+        if (savedInstanceState != null) {
+            currentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
 
         initView();
         initListener();
@@ -63,6 +72,13 @@ public class QuizActivity extends AppCompatActivity {
         getCurrentQuestion();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_INDEX, currentIndex);
+    }
+
+    //----------------------------------------private method--------------------------------------//
     private void getCurrentQuestion() {
         int question = questionBox[currentIndex].getQuestionTextResId();
         questionTextView.setText(question);
